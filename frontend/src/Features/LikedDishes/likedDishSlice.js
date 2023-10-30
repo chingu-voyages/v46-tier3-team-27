@@ -7,6 +7,7 @@ const initialState = {
   recipes: [],
   amount: 0,
   userId: "",
+  likeCounts: {},
 };
 
 export const getAllLikedDishes = createAsyncThunk(
@@ -40,6 +41,17 @@ export const deleteLikedDish = createAsyncThunk(
       const { data } = await customFetch.delete(`likedDishes/${dishId}`);
       thunkAPI.dispatch(getAllLikedDishes());
       return data.msg;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+export const getLikesForSingleDish = createAsyncThunk(
+  "likedDish/getLikesForSingleDish",
+  async (dishId) => {
+    try {
+      const { data } = await customFetch.get(`likedDishes/likes/${dishId}`);
+      return { dishId, likeCount: data.likeCount };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
     }
@@ -92,6 +104,9 @@ const likedDishSlice = createSlice({
       state.isLoading = false;
       console.log(payload);
       toast.error(payload);
+    });
+    builder.addCase(getLikesForSingleDish.fulfilled, (state, { payload }) => {
+      state.likeCounts[payload.dishId] = payload.likeCount;
     });
   },
 });
