@@ -35,7 +35,7 @@ const FavoriteButton = ({ dishId, recipe }) => {
 
   return (
     <div>
-      <label className="mt-2 btn btn-block swap swap-rotate">
+      <label className="mt-2 btn btn-block swap swap-rotate flex items-center justify-center space-x-2">
         {/* this hidden checkbox controls the state */}
         <input type="checkbox" onChange={handleSubmit} defaultChecked={isLiked} />
         {isLiked ? (
@@ -43,8 +43,8 @@ const FavoriteButton = ({ dishId, recipe }) => {
         ) : (
           <AiOutlineHeart className="w-12 h-10 text-red-500 " />
         )}
+        <span className="text-lg">{likeCount}</span>
       </label>
-      <span>{likeCount} Likes</span>
     </div>
   );
 };
