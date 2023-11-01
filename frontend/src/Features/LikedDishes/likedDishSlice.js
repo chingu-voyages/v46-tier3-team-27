@@ -48,7 +48,7 @@ export const deleteLikedDish = createAsyncThunk(
 );
 export const getLikesForSingleDish = createAsyncThunk(
   "likedDish/getLikesForSingleDish",
-  async (dishId) => {
+  async (dishId, thunkAPI) => {
     try {
       const { data } = await customFetch.get(`likedDishes/likes/${dishId}`);
       return { dishId, likeCount: data.likeCount };
