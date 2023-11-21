@@ -25,4 +25,14 @@ const deleteLikedDishes = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ msg: "Removed Favorite Dish" });
 };
 
-module.exports = { getAllLikedDishes, createLikedDishes, deleteLikedDishes };
+const getLikesForSingleDish = async (req, res) => {
+  const { dishId } = req.params;
+  try {
+    const likeCount = await LikedDish.count({ where: { dishId } });
+    res.json({ likeCount });
+  } catch (error) {
+    res.status(500).json({ error: "can't get likes" });
+  }
+};
+
+module.exports = { getAllLikedDishes, createLikedDishes, deleteLikedDishes, getLikesForSingleDish };

@@ -1,17 +1,23 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
   createLikedDish,
   deleteLikedDish,
+  getLikesForSingleDish,
 } from "../Features/LikedDishes/likedDishSlice";
 
 const FavoriteButton = ({ dishId, recipe }) => {
   const { user } = useAuth0();
   const dispatch = useDispatch();
   const { recipes } = useSelector((store) => store.likedDish);
+  const likeCount = useSelector((store) => store.likedDish.likeCounts[dishId] || 0);
+
+  useEffect(() => {
+    dispatch(getLikesForSingleDish(dishId));
+  }, [dishId]);
 
   const isLiked = new Set(
     recipes.map((recipe) => Number(recipe.id) === Number(dishId))
@@ -28,15 +34,18 @@ const FavoriteButton = ({ dishId, recipe }) => {
   };
 
   return (
-    <label className="mt-2 btn btn-block swap swap-rotate">
-      {/* this hidden checkbox controls the state */}
-      <input type="checkbox" onChange={handleSubmit} defaultChecked={isLiked} />
-      {isLiked ? (
-        <AiFillHeart className="w-12 h-10 text-red-500  hover:text-red-400" />
-      ) : (
-        <AiOutlineHeart className="w-12 h-10 text-red-500 " />
-      )}
-    </label>
+    <div>
+      <label className="mt-2 btn btn-block swap swap-rotate flex items-center justify-center space-x-2">
+        {/* this hidden checkbox controls the state */}
+        <input type="checkbox" onChange={handleSubmit} defaultChecked={isLiked} />
+        {isLiked ? (
+          <AiFillHeart className="w-12 h-10 text-red-500  hover:text-red-400" />
+        ) : (
+          <AiOutlineHeart className="w-12 h-10 text-red-500 " />
+        )}
+        <span className="text-lg">{likeCount}</span>
+      </label>
+    </div>
   );
 };
 
